@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dartsworp Generator</title>
+</head>
+<body>
+	<h1>Dartsworp Generator</h1>
+	<p>Klik op de knop om drie willekeurige dartsworpen te genereren:</p>
+
+	<form>
+		<input type="button" value="Genereer Worp" onclick="generateWorpen()" />
+	</form>
+
+	<div id="worpenResultaat"></div>
+
+	<script>
+		var worpen = [];
+
+		function generateWorpen() {
+			// Importeer de vereiste modules
+			var dartsworpen = ["S", "D", "T"];
+			var resultaatElement = document.getElementById("worpenResultaat");
+
+			// Maak drie willekeurige worpen met een vertraging van 5 seconden tussen elke worp
+			var i = 0;
+			var intervalId = setInterval(function() {
+				var random = Math.floor(Math.random() * 20) + 1;
+				var dartsworp = dartsworpen[Math.floor(Math.random() * dartsworpen.length)];
+
+				// Maak de worp string en voeg deze toe aan het resultaat element
+				var worpString = random.toString() + dartsworp;
+				resultaatElement.innerHTML += "<p>" + worpString + "</p>";
+				worpen.push(worpString);
+
+				i++;
+				if (i >= 3) {
+					clearInterval(intervalId);
+					setTimeout(function() {
+						// Toon de totale score
+						var totaalScore = worpen.reduce(function(a, b) {
+							var multiplier = b[b.length - 1];
+							var score = parseInt(b.substring(0, b.length - 1));
+							if (multiplier == "S") {
+								return a + score;
+							} else if (multiplier == "D") {
+								return a + (score * 2);
+							} else {
+								return a + (score * 3);
+							}
+						}, 0);
+						resultaatElement.innerHTML += "<p>Totaal score: " + totaalScore + "</p>";
+
+						// Verwijder de oude worpen en leeg de array
+						worpen = [];
+
+						// Voeg de knop "genereer worp" opnieuw toe
+						var knopHTML = '<form><input type="button" value="Genereer Worp" onclick="generateWorpen()" /></form>';
+						resultaatElement.insertAdjacentHTML('beforeend', knopHTML);
+					}, 10000);
+				}
+			}, 5000);
+		}
+
+		function resetWorpen() {
+			// Verwijder de oude worpen en leeg de array
+			var resultaatElement = document.getElementById("worpenResultaat");
+			resultaatElement.innerHTML = "";
+			worpen = [];
+
+			// Toon opnieuw de knop "genereer worp"
+			var knopHTML = '<form><input type="button" value="Genereer Worp" onclick="generateWorpen()" /></form>';
+			resultaatElement.insertAdjacentHTML('beforeend', knopHTML);
+		}
+	</script>
+</body>
+</html>
